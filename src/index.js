@@ -14,7 +14,7 @@ app.use(morgan('dev'));
 
 
 //rutas
-
+app.use(require('./routers/index'))
 // Public
 
 // Start
