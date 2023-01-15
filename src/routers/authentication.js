@@ -4,7 +4,7 @@ const router = express.Router();
 const passport = require('passport');//biblioteca
 const { isLoggedIn } = require('../lib/auth');
 
-// SIGNUP
+// SIGNUP Registro super Usuario o alumno
 router.get('/signup', (req, res) => {
   res.render('auth/signup'); // Envío a layauts 
 });
@@ -12,6 +12,7 @@ router.get('/signup', (req, res) => {
 router.post('/signup', (req, res, next) => {
   req.check('nombre', 'Username is Required').notEmpty();
   req.check('apellido', 'apellido is Required').notEmpty();
+  req.check('tipoUser', 'tipo Usario is Required').notEmpty();
   req.check('password', 'Password is Required').notEmpty();
   const errors = req.validationErrors();
   if (errors.length > 0) {
@@ -25,7 +26,7 @@ router.post('/signup', (req, res, next) => {
   })(req, res, next);
 });
 
-// SINGIN
+// SINGIN Inicio de Usuario
 router.get('/signin', (req, res) => {
   res.render('auth/signin'); //Redirecionar al template
 });
@@ -47,7 +48,7 @@ router.post('/signin', (req, res, next) => {
 
 router.get('/profile', isLoggedIn, (req, res) => {
   //res.send('good'); // si respondio serialize 
-  console.log(res);
+  console.log(res.body);
   res.render('profile');// redirigo a profile
 });
 

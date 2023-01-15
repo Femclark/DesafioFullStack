@@ -29,12 +29,20 @@ router.post('/add', async(req, res) => {
 
 // http://localhost:4000/links
 router.get('/', isLoggedIn, async (req, res) => {
-    console.log(req);
-    //const links = await pool.query('SELECT * FROM alumnos WHERE idAlumno = ?', [req.user.idAlumno]);
-    const links = await pool.query('SELECT * FROM alumnos ');
-    //console.log(links) 
-    //res.send('ok')
-    res.render('links/list', { links });
+    //console.log(req.user.rol);
+    if(req.user.rol==0){
+        console.log('paso por aqui con id y rol admin');
+        console.log(req.user.idAlumno)
+        console.log(req.user.rol)
+        var links = await pool.query('SELECT * FROM alumnos ');
+    }else{
+        console.log('paso por aqui con id y rol user');
+        console.log(req.user.idAlumno)
+        console.log(req.user.rol)
+        var links = await pool.query('SELECT * FROM alumnos WHERE idAlumno = ?', [req.user.idAlumno]);
+    }   
+    //const links = await pool.query('SELECT * FROM alumnos ');
+    res.render('links/list', { links }); //res.send('ok')
 });
 
 router.get('/delete/:id', async (req, res) => {

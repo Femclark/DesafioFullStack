@@ -33,7 +33,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false})); // solo texto en url
 app.use(bodyParser.json()); // uso de json en nuestra web
 app.use(session({
-  secret: 'faztmysqlnodemysql',
+  secret: 'FernandoMellaClark',
   resave: false, // no renovar sesion
   saveUninitialized: false, // no se volver a iniciar session
   store: new MySQLStore(database) //donde guardaré mi session (en mi bd)

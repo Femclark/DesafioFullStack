@@ -9,7 +9,7 @@ CREATE TABLE Alumnos (
   password VARCHAR(60) NOT NULL,
   apellido VARCHAR(100) NOT NULL,
   rol INT(1) NOT NULL,
-  idCarrera INT NOT NULL
+  idCarrera INT 
 );
 
 DESCRIBE Alumnos
