@@ -14,9 +14,13 @@
           Links 
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="/links">Todos Los Alumnos</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/links/add">Agregar Alumno</a>
+            {{#if user.rol}}
+                <a class="dropdown-item" href="/links">Informacion Alumno</a>
+            {{else}}
+                <a class="dropdown-item" href="/links">Listado de Alumnos</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/links/add">Agregar Alumno</a>                
+            {{/if}}
           </div>
         </li>
         <li class="nav-item">

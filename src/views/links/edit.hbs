@@ -2,22 +2,51 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="/links/edit/{{link.id}}" method="POST">
+            <form action="/links/edit/{{link.idAlumno}}" method="POST">
                 <div class="form-group">
-                    <input type="text" name="title" class="form-control" placeholder="Title" value="{{link.title}}" autofocus>
+                    <input type="text" name="nombre" maxlength="30" placeholder="Nombre" class="form-control" value="{{link.nombre}}" autofocus>
                 </div>
                 <div class="form-group">
-                    <input type="url" name="url" class="form-control" placeholder="URL" value="{{link.url}}">
+                    <input type="text" name="apellido" maxlength="30" placeholder="apellido" class="form-control" value="{{link.apellido}}" >
                 </div>
-                <div class="form-group">
-                    <textarea name="description" rows="2" class="form-control" placeholder="Description">{{link.description}}</textarea>
-                </div>
+                <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="inputGroupSelect02">Carrera</label>
+                        </div>
+                        <select class="custom-select" name="carrera" id="carreras"  onclick="cargarAdmin()">
+                            <option selected value="{{link.idCarrera}}">{{nameCarrera}}</option>
+                        </select>
+                </div>  
                 <div class="form-group">
                     <button class="btn btn-success btn-block">
-                        Save
+                        Guardar
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+
+function cargarAdmin() {
+ 
+       if( carreras.length < 2)
+       {
+            var listaCarrera = ["ICQ","ICI","IECI"];
+            //carreras.innerHTML = '<option value="">Seleccione Carrera...</option>'
+            carreras.disabled=false;
+            
+            listaCarrera.sort();// Se seleccionan oredeno
+            let x=0;
+            listaCarrera.forEach(function(carr){  // Insertamos las carreras      
+            let opcion = document.createElement('option')
+            opcion.value = x
+            opcion.text = carr
+            carreras.add(opcion)
+            x=x+1;
+            });   
+       }
+     
+}
+    </script>

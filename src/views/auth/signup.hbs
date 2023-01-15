@@ -62,9 +62,10 @@ function cargarAdmin() {
       else{
         carreras.innerHTML = '<option value="">Seleccione Carrera...</option>'
         carreras.disabled=false;
+        
         listaCarrera.sort();// Se seleccionan oredeno
-        listaCarrera.forEach(function(carr){  // Insertamos las carreras
-          var x=0;
+        let x=0;
+        listaCarrera.forEach(function(carr){  // Insertamos las carreras      
           let opcion = document.createElement('option')
           opcion.value = x
           opcion.text = carr
