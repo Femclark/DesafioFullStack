@@ -1,9 +1,8 @@
-const express = require('express');
-const { route } = require('.');
-const pool = require('../database');
+const express = require('express'); // framework
 const router = express.Router();
 
-const dbpool=require('../database');
+const pool = require('../database');// Conexion a BD
+const { isLoggedIn } = require('../lib/auth');// llamo a mi libreria de autentificacion
 
 // http://localhost:4000/links/add
 router.get('/add', (req, res) => {
@@ -20,18 +19,20 @@ router.post('/add', async(req, res) => {
         password:url,
         apellido:description,
         rol:1,
-        idCarrera:1
+        idCarrera:1,
+        idAlumnos: req.user.id
     };
-    //await pool.query('INSERT INTO alumnos set ?', [newLink]);
-    console.log(newLink);
-    res.send('Recivido');
+    await pool.query('INSERT INTO alumnos set ?', [newLink]);
+    req.flash('success', 'Link Saved Successfully');
+    res.redirect('/links');
 });
 
 // http://localhost:4000/links
-router.get('/', async (req, res) => {
-    //const links = await pool.query('SELECT * FROM alumnos WHERE user_id = ?', [req.user.id]);
+router.get('/', isLoggedIn, async (req, res) => {
+    console.log(req);
+    //const links = await pool.query('SELECT * FROM alumnos WHERE idAlumno = ?', [req.user.idAlumno]);
     const links = await pool.query('SELECT * FROM alumnos ');
-    //console.log(links)
+    //console.log(links) 
     //res.send('ok')
     res.render('links/list', { links });
 });
@@ -39,14 +40,14 @@ router.get('/', async (req, res) => {
 router.get('/delete/:id', async (req, res) => {
     //console.log(req.params);
     const { id } = req.params;
-    await pool.query('DELETE FROM alumnos WHERE ID = ?', [id]);
+    await pool.query('DELETE FROM alumnos WHERE idAlumno = ?', [id]);
     req.flash('success', 'Alumno Removed Successfully');
     res.redirect('/links');
 });
 
 router.get('/edit/:id', async (req, res) => {
     const { id } = req.params;
-    const links = await pool.query('SELECT * FROM alumnos WHERE id = ?', [id]);
+    const links = await pool.query('SELECT * FROM alumnos WHERE idAlumno = ?', [id]);
     console.log(links);
     res.render('links/edit', {link: links[0]});
 });
@@ -59,7 +60,7 @@ router.post('/edit/:id', async (req, res) => {
         description,
         url
     };
-    await pool.query('UPDATE alumnos set ? WHERE id = ?', [newLink, id]);
+    await pool.query('UPDATE alumnos set ? WHERE idAlumno = ?', [newLink, id]);
     req.flash('success', 'alumno Updated Successfully');
     res.redirect('/links');
 });
