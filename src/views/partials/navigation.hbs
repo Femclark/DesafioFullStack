@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-success">
   <div class="container">
-    <a class="navbar-brand" href="/"><i class="fas fa-link"></i> Sistema de Alumnos</a>
+    <a class="navbar-brand" href="/"></i> Sistema de Alumnos</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
       aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -19,7 +19,11 @@
             {{else}}
                 <a class="dropdown-item" href="/links">Listado de Alumnos</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/links/add">Agregar Alumno</a>                
+                <a class="dropdown-item" href="/links/add">Agregar Alumno</a>    
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/carreras">Listado Carreras</a>      
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/carreras/add">Agregar Carrera</a>                                            
             {{/if}}
           </div>
         </li>
@@ -34,7 +38,7 @@
           <a class="nav-link" href="/signin">Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/signup">Registrarse</a>
+          <a class="nav-link" href="/signup">Registrar Admin</a>
         </li>
         {{/if}}
       </ul>

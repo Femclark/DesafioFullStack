@@ -48,6 +48,7 @@ app.use(validator());
 app.use((req, res, next) => {
   app.locals.message = req.flash('message');
   app.locals.success = req.flash('success');
+  app.locals.error = req.flash('error');
   app.locals.user = req.user;
   next();
 });
@@ -55,7 +56,9 @@ app.use((req, res, next) => {
 //rutas
 app.use(require('./routers/index')); // la vista que quiero mostrar segun ruta
 app.use(require('./routers/authentication'));// autentificaciones
-app.use('/links', require('./routers/links'));// mis links que utilizaré 
+app.use('/links', require('./routers/links'));// mis rutas de usuario
+app.use('/carreras', require('./routers/carreras'));// mis rutas de carrera
+
 
 // Public  (imagenes, css, jS, etc )
 app.use(express.static(path.join(__dirname, 'public')));

@@ -10,9 +10,7 @@ font-family: 'Oswald', sans-serif;
     height: 100vh;
 }
 
-.navbar {
-    background: black !important;
-}
+
 
 .nav-link {
     color: #fff !important;
@@ -25,7 +23,7 @@ font-family: 'Oswald', sans-serif;
     height: 100%;
     padding-top: 8rem;
     padding-bottom: 8rem;
-    background: url('/img/background.jpeg');
+    background: url('/img/iacc-educacion-online.jpg');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;

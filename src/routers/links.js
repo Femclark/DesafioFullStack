@@ -6,13 +6,21 @@ const { isLoggedIn } = require('../lib/auth');// llamo a mi libreria de autentif
 const helpers = require('../lib/helpers');// requiero el encriptador 
 
 // http://localhost:4000/links/add
-router.get('/add', (req, res) => {
-    res.render('links/add');
+router.get('/add', async(req, res) => {
+    if(req.user.rol==0)
+    {
+        var carrerasBD = await pool.query('SELECT * FROM carrera');
+        res.render('links/add',{carrerasBD});//,
+    }else{
+        req.flash('error', 'Usuario no autorizado');
+        res.redirect('/logout');
+    }
     //res.send('form');
 });
 
 router.post('/add', async(req, res) => {
     //res.render('links/add');
+    console.log('aqui si que si');
     console.log(req.body);
     const { nombre, apellido,carrera, password } = req.body; // objeto body lo transformo a lista
     const newUser = {
@@ -25,7 +33,7 @@ router.post('/add', async(req, res) => {
     //console.log(newUser);
     newUser.password = await helpers.encryptPassword(password);// Encripto la password
     await pool.query('INSERT INTO alumnos set ?', [newUser]); 
-    req.flash('success', 'Link Saved Successfully');
+    req.flash('success', 'Alumno Guardado Satisfactoriamente');
     res.redirect('/links');
 });
 
@@ -42,20 +50,33 @@ router.get('/', isLoggedIn, async (req, res) => {
 });
 
 router.get('/delete/:id', async (req, res) => {
+    if(req.user.rol==0)// si es usuario valido
+    {
+        const { id } = req.params;
+        await pool.query('DELETE FROM alumnos WHERE idAlumno = ?', [id]);
+        req.flash('success', 'Alumno Eliminado Exitosamente');
+        res.redirect('/links');        
+    }else{
+        req.flash('error', 'Usuario no autorizado');
+        res.redirect('/logout');
+    }
     //console.log(req.params);
-    const { id } = req.params;
-    await pool.query('DELETE FROM alumnos WHERE idAlumno = ?', [id]);
-    req.flash('success', 'Alumno Eliminado Exitosamente');
-    res.redirect('/links');
 });
 
 router.get('/edit/:id', async (req, res) => {
-    const { id } = req.params;
-    const links = await pool.query('SELECT * FROM alumnos WHERE idAlumno = ?', [id]);
-    let nameCarrera=['ICI','ICQ','IECI'];
-    nameCarrera=nameCarrera[links[0].idCarrera];
-    //carreras= nameCarrera.filter();
-    res.render('links/edit', {link: links[0], nameCarrera});
+    if(req.user.rol==0)
+    {
+        const { id } = req.params;
+        const links = await pool.query('SELECT * FROM alumnos WHERE idAlumno = ?', [id]);
+        const carreras=await pool.query('SELECT * FROM carrera');
+        var filtroCarreras=carreras.filter((item) => item.idCarrera !== links[0].idCarrera);
+        var filCarrera=carreras.filter((item) => item.idCarrera === links[0].idCarrera);
+        var nameCarrera=filCarrera[0];      
+        res.render('links/edit', {link: links[0], nameCarrera,filtroCarreras});
+    }else{
+        req.flash('error', 'Usuario no autorizado');
+        res.redirect('/logout');  
+    }
 });
 
 router.post('/edit/:id', async (req, res) => {

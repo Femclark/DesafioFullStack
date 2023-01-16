@@ -14,8 +14,11 @@
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelect02">Carrera</label>
                         </div>
-                        <select class="custom-select" name="carrera" id="carreras"  onclick="cargarAdmin()">
+                        <select class="custom-select" name="carrera" id="carreras" >
                             <option selected>Choose...</option>
+                            {{#each carrerasBD}}
+                                <option selected value="{{idCarrera}}">{{nombre}}</option>
+                            {{/each}}
                         </select>
                         </div>              
                         <div class="form-group">
@@ -33,26 +36,4 @@
 
     </div>
 </div>
-
-<script>
-
-function cargarAdmin() {
- 
-       if( carreras.length < 2)
-       {
-            var listaCarrera = ["ICQ","ICI","IECI"];
-            //carreras.innerHTML = '<option value="">Seleccione Carrera...</option>'
-            carreras.disabled=false;
-            
-            listaCarrera.sort();// Se seleccionan oredeno
-            let x=0;
-            listaCarrera.forEach(function(carr){  // Insertamos las carreras      
-            let opcion = document.createElement('option')
-            opcion.value = x
-            opcion.text = carr
-            carreras.add(opcion)
-            x=x+1;
-            });   
-       }
-    </script>
 
