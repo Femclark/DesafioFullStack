@@ -5,8 +5,24 @@ const pool = require('../database');// Conexion a BD
 const { isLoggedIn } = require('../lib/auth');// llamo a mi libreria de autentificacion
 const helpers = require('../lib/helpers');// requiero el encriptador 
 
+const carrerasController = require('../controller/carreras.controller.js');
+
+
+//Api
+router.get('/listadocarreras',isLoggedIn, carrerasController.methods.getCarreras);// http://localhost:4000/carreras/ListadoCarreras
+
+router.get('/', isLoggedIn, async (req, res) => {
+    let carreras=[];
+    console.log(req.body); 
+    if(req.user.rol==0){
+         carreras = await carrerasController.methods.getCarreras(req,res);// llamo al controllador API
+    }else{  carreras=""; }  
+
+        res.render('carreras/listCarr', {carreras}  ); //res.send('ok')
+});
 
 // http://localhost:4000/carreras/add
+
 router.get('/add', (req, res) => {
 
     if(req.user.rol==0)
@@ -21,33 +37,30 @@ router.get('/add', (req, res) => {
 
 router.post('/add', async(req, res) => {
     //res.render('carreras/add');
-    console.log(req.body);
-    const { nombre } = req.body; // objeto body lo transformo a lista
-    const newCarrera = {
-        nombre
-    };
+
     //console.log(newUser);
-    await pool.query('INSERT INTO carrera set ?', [newCarrera]);
-    req.flash('success', 'Carrera Guardada Satisfactoriamente');
+    insert = await carrerasController.methods.insertCarrera(req,res);// llamo al controllador API
+    if (insert==true){
+        req.flash('success', 'Carrera Guardada Satisfactoriamente');
+    }else{
+        req.flash('error', 'Error al ingresar la carrera');
+    }
     res.redirect('/carreras');
 });
 
-// http://localhost:4000/carreras
-router.get('/', isLoggedIn, async (req, res) => {
-    if(req.user.rol==0){
-        var carreras = await pool.query('SELECT * FROM carrera ');
-    }else{ carreras=""; }   
-    //const carreras = await pool.query('SELECT * FROM carrera ');
-    res.render('carreras/listCarr', { carreras }); //res.send('ok')
-});
 
 router.get('/delete/:id', async (req, res) => {
     if(req.user.rol==0)
     {
-        const { id } = req.params;
-        await pool.query('DELETE FROM carrera WHERE idCarrera = ?', [id]);
-        req.flash('success', 'Carrera Eliminado Exitosamente');
-        res.redirect('/carreras');
+        borrado = await carrerasController.methods.DeleteCarrera(req,res);// llamo al controllador API
+        if(borrado==true){
+            req.flash('success', 'Carrera Eliminado Exitosamente');
+            res.redirect('/carreras');
+        }else{
+            req.flash('error', 'Error al borrar bd');
+            res.redirect('/carreras');
+        }
+
     }else{
         req.flash('error', 'Usuario no autorizado');
         res.redirect('/logout');
@@ -58,10 +71,8 @@ router.get('/edit/:id', async (req, res) => {
 
     if(req.user.rol==0)
     {
-        const { id } = req.params;
-        const carreras = await pool.query('SELECT * FROM carrera WHERE idCarrera = ?', [id]);
-        console.log(carreras);
-        res.render('carreras/editCarr', {carreras: carreras[0]});
+        carreras = await carrerasController.methods.GetCarreraid(req,res);// llamo al controllador API
+        res.render('carreras/editCarr', {carreras: carreras[0]});//
     }else{
         req.flash('error', 'Usuario no autorizado');
         res.redirect('/logout');
@@ -69,14 +80,14 @@ router.get('/edit/:id', async (req, res) => {
 });
 
 router.post('/edit/:id', async (req, res) => {
-    const { id } = req.params;
-    const { nombre} = req.body; 
-    const newCarrera = {
-        nombre
-    };
-    await pool.query('UPDATE carrera set ? WHERE idCarrera = ?', [newCarrera, id]);
-    req.flash('success', 'carrera actualizada satisfactoriamente');
-    res.redirect('/carreras');
+    Editado = await carrerasController.methods.EditCarrera(req,res);// llamo al controllador API
+    if(Editado==true){
+        req.flash('success', 'Carrera editada Exitosamente');
+        res.redirect('/carreras');
+    }else{
+        req.flash('error', 'Error al editada bd');
+        res.redirect('/carreras');
+    }
 });
 
 module.exports = router;

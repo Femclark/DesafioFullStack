@@ -5,35 +5,30 @@ const pool = require('../database');// Conexion a BD
 const { isLoggedIn } = require('../lib/auth');// llamo a mi libreria de autentificacion
 const helpers = require('../lib/helpers');// requiero el encriptador 
 
+const usuariosController = require('../controller/usuarios.controller.js');//Api
+const carrerasController = require('../controller/carreras.controller.js');//Api
+
 // http://localhost:4000/links/add
 router.get('/add', async(req, res) => {
     if(req.user.rol==0)
     {
-        var carrerasBD = await pool.query('SELECT * FROM carrera');
+        carrerasBD = await carrerasController.methods.getCarreras(req,res);// llamo al controllador API
         res.render('links/add',{carrerasBD});//,
     }else{
         req.flash('error', 'Usuario no autorizado');
-        res.redirect('/logout');
+        res.redirect('/profile');
     }
     //res.send('form');
 });
 
 router.post('/add', async(req, res) => {
-    //res.render('links/add');
-    console.log('aqui si que si');
-    console.log(req.body);
-    const { nombre, apellido,carrera, password } = req.body; // objeto body lo transformo a lista
-    const newUser = {
-        nombre,
-        apellido,
-        password,
-        rol:1, // rol usuario
-        idCarrera:carrera,
-    };
-    //console.log(newUser);
-    newUser.password = await helpers.encryptPassword(password);// Encripto la password
-    await pool.query('INSERT INTO alumnos set ?', [newUser]); 
-    req.flash('success', 'Alumno Guardado Satisfactoriamente');
+    insertado = await usuariosController.methods.insertUsuario(req,res);// llamo al controllador API
+    if(insertado==true){
+        req.flash('success', 'Alumno Guardado Satisfactoriamente');
+    }else{
+        req.flash('error', 'Error al Guardado Alumno');
+    }
+    
     res.redirect('/links');
 });
 
@@ -41,9 +36,9 @@ router.post('/add', async(req, res) => {
 router.get('/', isLoggedIn, async (req, res) => {
     //console.log(req.user.rol);
     if(req.user.rol==0){
-        var links = await pool.query('SELECT * FROM alumnos ');
+        var links = await usuariosController.methods.getUsurio(req,res);// llamo al controllador API
     }else{
-        var links = await pool.query('SELECT * FROM alumnos WHERE idAlumno = ?', [req.user.idAlumno]);
+        var links =  await usuariosController.methods.GetUsuarioid(req,res);// llamo al controllador API
     }   
     //const links = await pool.query('SELECT * FROM alumnos ');
     res.render('links/list', { links }); //res.send('ok')
@@ -52,13 +47,16 @@ router.get('/', isLoggedIn, async (req, res) => {
 router.get('/delete/:id', async (req, res) => {
     if(req.user.rol==0)// si es usuario valido
     {
-        const { id } = req.params;
-        await pool.query('DELETE FROM alumnos WHERE idAlumno = ?', [id]);
-        req.flash('success', 'Alumno Eliminado Exitosamente');
+        borrado = await usuariosController.methods.DeleteUsuario(req,res);// llamo al controllador API
+        if(borrado==true){
+            req.flash('success', 'Alumno Eliminado Exitosamente');
+        }else{
+            req.flash('error', 'Error al Eliminar Alumno');
+        }       
         res.redirect('/links');        
     }else{
         req.flash('error', 'Usuario no autorizado');
-        res.redirect('/logout');
+        res.redirect('/profile');
     }
     //console.log(req.params);
 });
